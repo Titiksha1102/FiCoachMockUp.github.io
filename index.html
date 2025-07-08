@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArthFiCoach - Your Personal Wealth Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-teal: #00C4B4;
+            --soft-teal: #E0F7F5;
+            --light-grey: #F8F9FA;
+            --medium-grey: #6C757D;
+            --dark-grey: #343A40;
+            --white: #FFFFFF;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --border-radius: 16px;
+            --border-radius-sm: 8px;
+        }
+
+        [data-theme="dark"] {
+            --light-grey: #1A1A1A;
+            --white: #2D2D2D;
+            --dark-grey: #FFFFFF;
+            --medium-grey: #B0B0B0;
+            --soft-teal: #003D37;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-grey);
+            color: var(--dark-grey);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen {
+            display: none;
+            padding: 20px;
+            min-height: 100vh;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .theme-toggle {
+            background: var(--soft-teal);
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-teal);
+        }
+
+        .welcome-content {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .welcome-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--dark-grey);
+        }
+
+        .welcome-subtitle {
+            font-size: 16px;
+            color: var(--medium-grey);
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .coach-illustration {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary-teal), var(--soft-teal));
+            border-radius: 50%;
+            margin: 0 auto 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .coach-icon {
+            font-size: 80px;
+            color: var(--white);
+        }
+
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 24px;
+            color: var(--primary-teal);
+            animation: bounce 2s infinite;
+        }
+
+        .floating-icon:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+        .floating-icon:nth-child(2) { top: 20%; right: 15%; animation-delay: 0.5s; }
+        .floating-icon:nth-child(3) { bottom: 30%; left: 10%; animation-delay: 1s; }
+        .floating-icon:nth-child(4) { bottom: 15%; right: 20%; animation-delay: 1.5s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .btn {
+            padding: 16px 24px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            background: var(--primary-teal);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #00A299;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-teal);
+            border: 2px solid var(--primary-teal);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-teal);
+            color: var(--white);
+        }
+
+        .greeting {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--dark-grey);
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid rgba(0, 196, 180, 0.1);
+        }
+
+        .financial-pulse {
+            background: linear-gradient(135deg, var(--primary-teal), #00A299);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .pulse-title {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .pulse-amount {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .pulse-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .action-btn {
+            background: var(--soft-teal);
+            border: none;
+            padding: 16px 12px;
+            border-radius: var(--border-radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-teal);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-teal);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 80px;
+        }
+
+        .module-card {
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            border: 1px solid rgba(0, 196, 180, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .module-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .module-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-grey);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            background: var(--white);
+            border-top: 1px solid rgba(0, 196, 180, 0.1);
+            padding: 12px 0;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--medium-grey);
+            font-size: 12px;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .nav-item.active {
+            color: var(--primary-teal);
+            background: var(--soft-teal);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--primary-teal);
+            cursor: pointer;
+            margin-right: 12px;
+        }
+
+        .chat-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 80px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: var(--border-radius-sm);
+            font-size: 14px;
+        }
+
+        .message.user .message-content {
+            background: var(--primary-teal);
+            color: var(--white);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.agent .message-content {
+            background: var(--soft-teal);
+            color: var(--dark-grey);
+            border-bottom-left-radius: 4px;
+        }
+
+        .agent-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-size: 16px;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .chart-container {
+            background: var(--white);
+            border-radius: var(--border-radius-sm);
+            padding: 16px;
+            margin: 12px 0;
+            border: 1px solid rgba(0, 196, 180, 0.1);
+        }
+
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, var(--soft-teal), var(--primary-teal));
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-teal);
+            font-weight: 600;
+        }
+
+        .response-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .response-btn {
+            background: var(--soft-teal);
+            border: none;
+            padding: 8px 12px;
+            border-radius: var(--border-radius-sm);
+            font-size: 12px;
+            color: var(--primary-teal);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .response-btn:hover {
+            background: var(--primary-teal);
+            color: var(--white);
+        }
+
+        .mic-button {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: var(--primary-teal);
+            border: none;
+            border-radius: 50%;
+            color: var(--white);
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .mic-button:hover {
+            transform: scale(1.1);
+        }
+
+        .simulation-controls {
+            margin-bottom: 24px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-grey);
+            margin-bottom: 8px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: var(--soft-teal);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-teal);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--primary-teal);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .insights-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--primary-teal);
+        }
+
+        .insights-card.positive {
+            border-left-color: #28a745;
+        }
+
+        .insights-card.warning {
+            border-left-color: #ffc107;
+        }
+
+        .privacy-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0, 196, 180, 0.1);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: var(--medium-grey);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary-teal);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--white);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(26px);
+        }
+
+        .screen-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--dark-grey);
+        }
+
+        .input-group {
+            margin-bottom: 80px;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid rgba(0, 196, 180, 0.2);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            background: var(--white);
+            color: var(--dark-grey);
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+        }
+
+        .send-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            background: var(--primary-teal);
+            border: none;
+            color: var(--white);
+            padding: 8px 12px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .navigation-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-button {
+            flex: 1;
+            padding: 12px;
+            background: var(--primary-teal);
+            color: var(--white);
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background: #00A299;
+            transform: translateY(-2px);
+        }
+
+        .nav-button.secondary {
+            background: var(--soft-teal);
+            color: var(--primary-teal);
+        }
+
+        .nav-button.secondary:hover {
+            background: var(--primary-teal);
+            color: var(--white);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="screen active" id="welcome">
+            <div class="header">
+                <div class="logo">ArthFiCoach</div>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            </div>
+            
+            <div class="welcome-content">
+                <h1 class="welcome-title">Namaste! Meet ArthFiCoach<br>Your Personal Wealth Guide</h1>
+                <p class="welcome-subtitle">Get personalised insights on your money — savings, SIPs, debt, goals & more</p>
+                
+                <div class="coach-illustration">
+                    <div class="coach-icon">🤖</div>
+                    <div class="floating-icons">
+                        <div class="floating-icon">₹</div>
+                        <div class="floating-icon">📊</div>
+                        <div class="floating-icon">💰</div>
+                        <div class="floating-icon">🏆</div>
+                    </div>
+                </div>
+                
+                <a href="#" class="btn btn-primary" onclick="showScreen('dashboard')">Connect my Fi MCP</a>
+                <a href="#" class="btn btn-secondary" onclick="showScreen('dashboard')">Explore without linking</a>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div class="screen" id="dashboard">
+            <div class="header">
+                <div class="logo">ArthFiCoach</div>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            </div>
+            
+            <div class="greeting">Good Morning, Tanya!</div>
+            
+            <div class="card financial-pulse">
+                <div class="pulse-title">Financial Pulse</div>
+                <div class="pulse-amount">₹2,45,000</div>
+                <div class="pulse-stats">
+                    <span>Goal Progress: 68%</span>
+                    <span>↑ ₹12,500</span>
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <button class="action-btn" onclick="showScreen('chat')">Ask a question</button>
+                <button class="action-btn">Monthly check-up</button>
+                <button class="action-btn" onclick="showScreen('simulation')">Simulate future</button>
+                <button class="action-btn">Quick insights</button>
+            </div>
+            
+            <div class="modules-grid">
+                <div class="module-card">
+                    <div class="module-icon">🧾</div>
+                    <div class="module-title">Budget</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">💳</div>
+                    <div class="module-title">Debt</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">📈</div>
+                    <div class="module-title">SIP</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">🏦</div>
+                    <div class="module-title">EPF/NPS</div>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">🎯</div>
+                    <div class="module-title">Goals</div>
+                </div>
+                <div class="module-card" onclick="showScreen('privacy')">
+                    <div class="module-icon">🔒</div>
+                    <div class="module-title">Privacy</div>
+                </div>
+            </div>
+            
+            <div class="bottom-nav">
+                <a href="#" class="nav-item active" onclick="showScreen('dashboard')">
+                    <div class="nav-icon">🏠</div>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showScreen('chat')">
+                    <div class="nav-icon">💬</div>
+                    <span>Ask ArthFiCoach</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showScreen('insights')">
+                    <div class="nav-icon">📊</div>
+                    <span>Insights</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showScreen('settings')">
+                    <div class="nav-icon">⚙️</div>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Chat Screen -->
+        <div class="screen" id="chat">
+            <div class="chat-header">
+                <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+                <h2 class="chat-title">Ask ArthFiCoach</h2>
+            </div>
+            
+            <div class="chat-container">
+                <div class="message user">
+                    <div class="message-content">
+                        How's my SIP performing vs. market?
+                    </div>
+                </div>
+                
+                <div class="message agent">
+                    <div class="agent-avatar">🤖</div>
+                    <div class="message-content">
+                        <div class="chart-container">
+                            <div class="chart-placeholder">
+                                📈 SIP Performance vs Nifty 50
+                            </div>
+                        </div>
+                        
+                        <p><strong>Your SIP Performance:</strong></p>
+                        <p>• Your portfolio: +12.5% (12 months)</p>
+                        <p>• Nifty 50 Index: +8.7% (12 months)</p>
+                        <p>• You're outperforming by 3.8%! 🎉</p>
+                        
+                        <p><strong>Suggestion:</strong> Consider increasing your SIP amount by ₹2,000 to maximize this good momentum.</p>
+                        
+                        <div class="response-actions">
+                            <button class="response-btn" onclick="showScreen('simulation')">Simulate increase</button>
+                            <button class="response-btn">Export PDF</button>
+                            <button class="response-btn">Full portfolio</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <div class="input-container">
+                    <input type="text" class="chat-input" placeholder="Ask me anything about your finances...">
+                    <button class="send-btn">Send</button>
+                </div>
+            </div>
+            
+            <button class="mic-button" title="Hold to speak">🎤</button>
+        </div>
+
+        <!-- Simulation Screen -->
+        <div class="screen" id="simulation">
+            <div class="chat-header">
+                <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+                <h2 class="chat-title">Retirement Simulation</h2>
+            </div>
+            
+            <h1 class="screen-title">Can I retire at 50?</h1>
+            
+            <div class="simulation-controls">
+                <div class="control-group">
+                    <label class="control-label">Current Savings: ₹2,45,000</label>
+                    <input type="range" class="slider" min="100000" max="1000000" value="245000">
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">Monthly SIP: ₹15,000</label>
+                    <input type="range" class="slider" min="5000" max="50000" value="15000">
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">Expected Return: 12%</label>
+                    <input type="range" class="slider" min="8" max="18" value="12">
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-placeholder">
+                    📊 Net Worth Trajectory
+                    <br>Age 50: ₹1.2Cr projected
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Insights</h3>
+                <p>You'll need ₹1.5Cr to retire comfortably at 50. Based on current trajectory, you'll reach ₹1.2Cr by age 50.</p>
+                <p><strong>You're 80% on track! 🎯</strong></p>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" onclick="showScreen('chat')">What can I improve?</button>
+                <button class="nav-button secondary" onclick="showScreen('dashboard')">Back to Dashboard</button>
+            </div>
+        </div>
+
+        <!-- Insights Screen -->
+        <div class="screen" id="insights">
+            <div class="chat-header">
+                <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+                <h2 class="chat-title">Insights</h2>
+            </div>
+            
+            <div class="insights-card positive">
+                <h3>Peer Benchmark 📊</h3>
+                <p>Your savings rank in top 20% of peers aged 28-35 in Bengaluru</p>
+            </div>
+            
+            <div class="insights-card warning">
+                <h3>Spending Alert ⚠️</h3>
+                <p>You're overspending 15% on lifestyle vs. your income group</p>
+            </div>
+            
+            <div class="insights-card positive">
+                <h3>Achievement Unlocked 🏆</h3>
+                <p>Savings streak: 3 months straight!</p>
+            </div>
+            
+            <div class="insights-card">
+                <h3>Investment Health 💹</h3>
+                <p>Your portfolio diversity score: 8.5/10. Well balanced across equity and debt.</p>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" onclick="showScreen('dashboard')">Back to Dashboard</button>
+            </div>
+        </div>
+
+        <!-- Privacy Screen -->
+        <div class="screen" id="privacy">
+            <div class="chat-header">
+                <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+                <h2 class="chat-title">Privacy Control</h2>
+            </div>
+            
+            <div class="card">
+                <h3>Data Access Control</h3>
+                <p>You're always in control. No data shared without consent.</p>
+                
+                <div class="privacy-toggle">
+                    <span>Mutual Funds</span>
+                    <div class="toggle-switch active" onclick="togglePrivacySwitch(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="privacy-toggle">
+                    <span>Bank Balances</span>
+                    <div class="toggle-switch active" onclick="togglePrivacySwitch(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="privacy-toggle">
+                    <span>Loans</span>
+                    <div class="toggle-switch active" onclick="togglePrivacySwitch(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="privacy-toggle">
+                    <span>NPS</span>
+                    <div class="toggle-switch" onclick="togglePrivacySwitch(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="privacy-toggle">
+                    <span>EPF</span>
+                    <div class="toggle-switch active" onclick="togglePrivacySwitch(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Emergency Controls</h3>
+                <button class="btn btn-secondary" style="margin-bottom: 0;">Pause MCP Access</button>
+                <p style="font-size: 14px; color: var(--medium-grey); margin-top: 8px;">
+                    Temporarily stop all data sync while keeping your analysis history
+                </p>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" onclick="showScreen('dashboard')">Back to Dashboard</button>
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div class="screen" id="settings">
+            <div class="chat-header">
+                <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+                <h2 class="chat-title">Settings</h2>
+            </div>
+            
+            <div class="card">
+                <h3>App Preferences</h3>
+                
+                <div class="privacy-toggle">
+                    <span>Dark Mode</span>
+                    <div class="toggle-switch" onclick="toggleTheme(); togglePrivacySwitch(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="privacy-toggle">
+                    <span>Push Notifications</span>
+                    <div class="toggle-switch active" onclick="togglePrivacySwitch(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="privacy-toggle">
+                    <span>Voice Input</span>
+                    <div class="toggle-switch active" onclick="togglePrivacySwitch(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="privacy-toggle">
+                    <span>Weekly Reports</span>
+                    <div class="toggle-switch active" onclick="togglePrivacySwitch(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Language & Region</h3>
+                <p>Language: English</p>
+                <p>Currency: INR (₹)</p>
+                <p>Region: India</p>
+            </div>
+            
+            <div class="card">
+                <h3>About ArthFiCoach</h3>
+                <p>Version 1.0.0</p>
+                <p>Built with Fi Money's MCP Server</p>
+                <p style="font-size: 12px; color: var(--medium-grey); margin-top: 8px;">
+                    Your personal AI financial advisor
+                </p>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" onclick="showScreen('dashboard')">Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            
+            // Update theme toggle button
+            const themeButtons = document.querySelectorAll('.theme-toggle');
+            themeButtons.forEach(btn => {
+                btn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            });
+        }
+
+        // Screen navigation
+        function showScreen(screenId) {
+            // Hide all screens
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show target screen
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+            }
+            
+            // Update bottom navigation
+            updateBottomNav(screenId);
+        }
+
+        function updateBottomNav(activeScreen) {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Map screen IDs to nav items
+            const navMapping = {
+                'dashboard': 0,
+                'chat': 1,
+                'insights': 2,
+                'settings': 3
+            };
+            
+            if (navMapping[activeScreen] !== undefined) {
+                navItems[navMapping[activeScreen]].classList.add('active');
+            }
+        }
+
+        // Privacy toggle functionality
+        function togglePrivacySwitch(element) {
+            element.classList.toggle('active');
+        }
+
+        // Chat input functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.querySelector('.chat-input');
+            const sendBtn = document.querySelector('.send-btn');
+            
+            if (chatInput && sendBtn) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+                
+                sendBtn.addEventListener('click', sendMessage);
+            }
+        });
+
+        function sendMessage() {
+            const chatInput = document.querySelector('.chat-input');
+            const message = chatInput.value.trim();
+            
+            if (message) {
+                // Add user message to chat
+                addMessageToChat(message, 'user');
+                chatInput.value = '';
+                
+                // Simulate AI response
+                setTimeout(() => {
+                    addMessageToChat('I\'m analyzing your request. Let me check your financial data...', 'agent');
+                }, 1000);
+            }
+        }
+
+        function addMessageToChat(message, sender) {
+            const chatContainer = document.querySelector('.chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            if (sender === 'agent') {
+                messageDiv.innerHTML = `
+                    <div class="agent-avatar">🤖</div>
+                    <div class="message-content">${message}</div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-content">${message}</div>
+                `;
+            }
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Slider value updates
+        document.addEventListener('DOMContentLoaded', function() {
+            const sliders = document.querySelectorAll('.slider');
+            sliders.forEach(slider => {
+                slider.addEventListener('input', function() {
+                    const label = this.parentElement.querySelector('.control-label');
+                    const value = this.value;
+                    
+                    if (label.textContent.includes('Savings')) {
+                        label.textContent = `Current Savings: ₹${parseInt(value).toLocaleString()}`;
+                    } else if (label.textContent.includes('SIP')) {
+                        label.textContent = `Monthly SIP: ₹${parseInt(value).toLocaleString()}`;
+                    } else if (label.textContent.includes('Return')) {
+                        label.textContent = `Expected Return: ${value}%`;
+                    }
+                });
+            });
+        });
+
+        // Mic button functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const micButton = document.querySelector('.mic-button');
+            if (micButton) {
+                let isRecording = false;
+                
+                micButton.addEventListener('mousedown', function() {
+                    isRecording = true;
+                    this.style.background = '#FF6B6B';
+                    this.textContent = '🔴';
+                });
+                
+                micButton.addEventListener('mouseup', function() {
+                    isRecording = false;
+                    this.style.background = 'var(--primary-teal)';
+                    this.textContent = '🎤';
+                });
+                
+                micButton.addEventListener('mouseleave', function() {
+                    if (isRecording) {
+                        isRecording = false;
+                        this.style.background = 'var(--primary-teal)';
+                        this.textContent = '🎤';
+                    }
+                });
+            }
+        });
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial theme
+            document.body.setAttribute('data-theme', 'light');
+            
+            // Add some interactive behaviors
+            const cards = document.querySelectorAll('.card, .module-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+            
+            // Add floating animation to coach illustration
+            const floatingIcons = document.querySelectorAll('.floating-icon');
+            floatingIcons.forEach((icon, index) => {
+                icon.style.animationDelay = `${index * 0.5}s`;
+            });
+        });
+
+        // Add touch feedback for mobile
+        document.addEventListener('touchstart', function(e) {
+            if (e.target.classList.contains('btn') || 
+                e.target.classList.contains('action-btn') || 
+                e.target.classList.contains('nav-button')) {
+                e.target.style.opacity = '0.8';
+            }
+        });
+
+        document.addEventListener('touchend', function(e) {
+            if (e.target.classList.contains('btn') || 
+                e.target.classList.contains('action-btn') || 
+                e.target.classList.contains('nav-button')) {
+                setTimeout(() => {
+                    e.target.style.opacity = '';
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>
